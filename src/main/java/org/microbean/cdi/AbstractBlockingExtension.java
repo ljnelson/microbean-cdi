@@ -27,6 +27,9 @@ import javax.enterprise.event.ObservesAsync;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * An {@code abstract} {@link Extension} whose implementations can
  * legally and politely prevent a CDI container from exiting.
@@ -60,6 +63,13 @@ public abstract class AbstractBlockingExtension implements Extension {
    * @see #AbstractBlockingExtension(CountDownLatch)
    */
   private final CountDownLatch latch;
+
+  /**
+   * The {@link Logger} used by instances of this class.
+   *
+   * <p>This field is never {@code null}.</p>
+   */
+  protected final Logger logger;
 
 
   /*
@@ -98,6 +108,7 @@ public abstract class AbstractBlockingExtension implements Extension {
     super();
     Objects.requireNonNull(latch);
     this.latch = latch;
+    this.logger = LoggerFactory.getLogger(this.getClass());
     Runtime.getRuntime().addShutdownHook(new ShutdownHook());
   }
 
@@ -123,8 +134,14 @@ public abstract class AbstractBlockingExtension implements Extension {
    * @see #unblock()
    */
   protected void fireBlockingEvent(final BeanManager beanManager) {
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("ENTRY {} {} {}", this.getClass().getName(), "fireBlockingEvent", beanManager);
+    }
     Objects.requireNonNull(beanManager);
     beanManager.getEvent().select(BlockingEvent.class).fireAsync(new BlockingEvent());
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("EXIT {} {}", this.getClass().getName(), "fireBlockingEvent");
+    }
   }
 
   /**
@@ -149,8 +166,14 @@ public abstract class AbstractBlockingExtension implements Extension {
    * @see #unblock()
    */
   protected void fireBlockingEvent(final BeanManager beanManager, final NotificationOptions options) {
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("ENTRY {} {} {}, {}", this.getClass().getName(), "fireBlockingEvent", beanManager, options);
+    }
     Objects.requireNonNull(beanManager);
     beanManager.getEvent().select(BlockingEvent.class).fireAsync(new BlockingEvent(), options);
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("EXIT {} {}", this.getClass().getName(), "fireBlockingEvent");
+    }
   }
 
   /**
@@ -170,8 +193,14 @@ public abstract class AbstractBlockingExtension implements Extension {
    *
    * @see #unblock()
    */
-  private final void block(@ObservesAsync final BlockingEvent event) throws InterruptedException {    
+  private final void block(@ObservesAsync final BlockingEvent event) throws InterruptedException {
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("ENTRY {} {} {}", this.getClass().getName(), "block", event);
+    }
     this.latch.await();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("EXIT {} {}", this.getClass().getName(), "block");
+    }
   }
 
   /**
@@ -183,7 +212,13 @@ public abstract class AbstractBlockingExtension implements Extension {
    * @see #fireBlockingEvent(BeanManager)
    */
   public void unblock() {
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("ENTRY {} {}", this.getClass().getName(), "unblock");
+    }
     this.latch.countDown();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("EXIT {} {}", this.getClass().getName(), "unblock");
+    }
   }
 
 

@@ -57,10 +57,17 @@
         <type>jar</type>
       </dependency>
 
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.22</version>
+      <type>jar</type>
+    </dependency>
+      
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>1.7.21</version>
+        <version>1.7.22</version>
         <type>jar</type>
       </dependency>
       
@@ -68,6 +75,15 @@
   </dependencyManagement>
 
   <dependencies>
+
+    <!-- Compile-scoped dependencies. -->
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
 
     <!-- Provided-scoped dependencies. -->
 
@@ -188,7 +204,7 @@
     <findbugs.threshold>Medium</findbugs.threshold>
 
     <!-- maven-javadoc-plugin properties; see https://maven.apache.org/plugins/maven-javadoc-plugin/javadoc-mojo.html -->
-    <links>http://docs.jboss.org/cdi/api/2.0-PFD/,http://docs.oracle.com/javaee/7/api/</links>
+    <links>https://www.slf4j.org/api/,http://docs.jboss.org/cdi/api/2.0-PFD/,http://docs.oracle.com/javaee/7/api/</links>
 
     <!-- Weld logging; see https://docs.jboss.org/weld/reference/latest/en-US/html/logging.html#_weld_se -->
     <org.jboss.logging.provider>slf4j</org.jboss.logging.provider>
