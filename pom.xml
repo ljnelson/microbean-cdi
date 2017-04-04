@@ -225,7 +225,7 @@
     <findbugs.threshold>Medium</findbugs.threshold>
 
     <!-- maven-javadoc-plugin properties; see https://maven.apache.org/plugins/maven-javadoc-plugin/javadoc-mojo.html -->
-    <links>https://www.slf4j.org/api/,http://docs.jboss.org/cdi/api/2.0-PFD/,http://docs.oracle.com/javaee/7/api/</links>
+    <links>https://www.slf4j.org/api/,http://docs.jboss.org/cdi/api/2.0-PFD2/,http://docs.oracle.com/javaee/7/api/</links>
 
     <!-- maven-release-plugin properties -->
     <goals>deploy,site-deploy</goals>
