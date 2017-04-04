@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * Extension} that wishes to launch a server of some kind and to
  * notionally block until someone interrupts the process.</p>
  *
- * @author <a href="http://about.me/lairdnelson"
+ * @author <a href="https://about.me/lairdnelson"
  * target="_parent">Laird Nelson</a>
  *
  * @see CountDownLatch
@@ -231,7 +231,7 @@ public abstract class AbstractBlockingExtension implements Extension {
    * A {@link Thread} whose {@link Thread#run()} method calls the
    * {@link #unblock()} method.
    *
-   * @author <a href="http://about.me/lairdnelson"
+   * @author <a href="https://about.me/lairdnelson"
    * target="_parent">Laird Nelson</a>
    *
    * @see #unblock()
@@ -273,7 +273,7 @@ public abstract class AbstractBlockingExtension implements Extension {
    * Event#fireAsync(Object) fired asynchronously}, indicates that the
    * receiver should wait for its current {@link Thread} to die.
    *
-   * @author <a href="http://about.me/lairdnelson"
+   * @author <a href="https://about.me/lairdnelson"
    * target="_parent">Laird Nelson</a>
    *
    * @see #fireBlockingEvent(BeanManager)
