@@ -1,1 +1,1 @@
-# MicroBean CDI Utilities
+# microBean CDI Utilities

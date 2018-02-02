@@ -92,11 +92,65 @@ public final class Annotations {
   public static final Set<Annotation> getAnnotationsQualifiedWith(final Annotated host, final Class<? extends Annotation> metaAnnotationType, final BeanManager beanManager) {
     return retainAnnotationsQualifiedWith(host.getAnnotations(), Objects.requireNonNull(metaAnnotationType), beanManager);
   }
-  
+
+  /**
+   * Returns a {@link Set} of {@link Annotation}s that are
+   * <em>ultimately qualified</em> with an annotation whose
+   * {@linkplain Annotation#annotationType() annotation type} is equal
+   * to the supplied {@code metaAnnotationType}.
+   *
+   * <p>This method never returns {@code null}.</p>
+   *
+   * @param host the {@link AnnotatedElement} whose {@linkplain
+   * Annotated#getAnnotations() annotations} will be used as the
+   * initial set; must not be {@code null}
+   *
+   * @param metaAnnotationType the qualifier {@linkplain
+   * Annotation#annotationType() annotation type} to look for; must
+   * not be {@code null}
+   *
+   * @param beanManager a {@link BeanManager} for retrieving the
+   * appropriate {@linkplain BeanManager#createAnnotatedType(Class)
+   * annotated type} when appropriate; may be {@code null}
+   *
+   * @return a non-{@code null} subset of {@link Annotation}s
+   *
+   * @exception NullPointerException if {@code host} or {@code
+   * metaAnnotationType} is {@code null}
+   *
+   * @see #retainAnnotationsQualifiedWith(Collection, Class,
+   * BeanManager)
+   */
   public static final Set<Annotation> getAnnotationsQualifiedWith(final AnnotatedElement host, final Class<? extends Annotation> metaAnnotationType, final BeanManager beanManager) {
     return retainAnnotationsQualifiedWith(Arrays.asList(host.getAnnotations()), Objects.requireNonNull(metaAnnotationType), beanManager);
   }
 
+  /**
+   * Given a {@link Collection} of {@link Annotation}s, returns a
+   * subset of them that are found to be <em>ultimately qualified</em>
+   * with an annotation whose {@linkplain Annotation#annotationType()
+   * annotation type} is equal to the supplied {@code
+   * metaAnnotationType}.
+   *
+   * <p>This method never returns {@code null}.</p>
+   *
+   * @param suppliedAnnotations a {@link Collection} of {@link
+   * Annotation}s that will be used as the initial set; must not be
+   * {@code null}
+   *
+   * @param metaAnnotationType the qualifier {@linkplain
+   * Annotation#annotationType() annotation type} to look for; must
+   * not be {@code null}
+   *
+   * @param beanManager a {@link BeanManager} for retrieving the
+   * appropriate {@linkplain BeanManager#createAnnotatedType(Class)
+   * annotated type} when appropriate; may be {@code null}
+   *
+   * @return a non-{@code null} subset of {@link Annotation}s
+   *
+   * @exception NullPointerException if {@code suppliedAnnotations} or
+   * {@code metaAnnotationType} is {@code null}
+   */
   public static final Set<Annotation> retainAnnotationsQualifiedWith(final Collection<? extends Annotation> suppliedAnnotations, final Class<? extends Annotation> metaAnnotationType, final BeanManager beanManager) {
     Objects.requireNonNull(suppliedAnnotations);
     Objects.requireNonNull(metaAnnotationType);
@@ -127,14 +181,14 @@ public final class Annotations {
    * may be {@code null} in which case {@link
    * AnnotatedElement#getAnnotations()} will be called instead
    *
-   * @return a non-{@link null} {@link Collection} of {@link
+   * @return a non-{@code null} {@link Collection} of {@link
    * Annotation}s
    *
    * @see BeanManager#createAnnotatedType(Class)
    *
    * @see AnnotatedElement#getAnnotations()
    */
-  public static final <X> Collection<? extends Annotation> getAnnotations(final Class<X> c, final BeanManager beanManager) {
+  public static final Collection<? extends Annotation> getAnnotations(final Class<?> c, final BeanManager beanManager) {
     Objects.requireNonNull(c);
     final Collection<? extends Annotation> returnValue;
     if (beanManager != null) {
@@ -157,8 +211,8 @@ public final class Annotations {
    * annotation represented by the supplied {@code qualifierType} is
    * {@linkplain AnnotatedElement <em>present</em>} on the supplied
    * {@code annotation} or one of its {@link Annotation}s, or
-   * {@linkplain AnnotatedElement <em>present</em>} on one of those
-   * {@link Annotation}s, and so on.</p>
+   * {@linkplain AnnotatedElement <em>present</em>} on one of
+   * <em>those</em> {@link Annotation}s, and so on.</p>
    *
    * @param annotation the {@link Annotation} to check; must not be
    * {@code null}
@@ -168,8 +222,8 @@ public final class Annotations {
    * not be {@code null}
    *
    * @param beanManager a {@link BeanManager} whose {@link
-   * #createAnnotatedType(Class)} method will be called; may be {@code
-   * null}
+   * BeanManager#createAnnotatedType(Class)} method will be called;
+   * may be {@code null}
    *
    * @return {@code true} if the supplied {@link Annotation} is
    * <em>ultimately qualified</em> by an annotation {@linkplain

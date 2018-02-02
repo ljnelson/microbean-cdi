@@ -1,6 +1,6 @@
 /* -*- mode: Java; c-basic-offset: 2; indent-tabs-mode: nil; coding: utf-8-unix -*-
  *
- * Copyright © 2017 MicroBean.
+ * Copyright © 2017-2018 microBean.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,5 +23,7 @@
  * target="_parent">Laird Nelson</a>
  *
  * @see org.microbean.cdi.AbstractBlockingExtension
+ *
+ * @see org.microbean.cdi.Annotations
  */
 package org.microbean.cdi;

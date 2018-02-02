@@ -1,6 +1,6 @@
 /* -*- mode: Java; c-basic-offset: 2; indent-tabs-mode: nil; coding: utf-8-unix -*-
  *
- * Copyright © 2017 MicroBean.
+ * Copyright © 2017-2018 microBean.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,8 @@ import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.BeforeDestroyed;
 
-import javax.enterprise.event.Event; // for javadoc only
-import javax.enterprise.event.NotificationOptions;
-import javax.enterprise.event.ObservesAsync;
 import javax.enterprise.event.Observes;
 
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
 import javax.interceptor.Interceptor;
@@ -147,66 +143,6 @@ public abstract class AbstractBlockingExtension implements Extension {
    * Instance methods.
    */
 
-
-  /**
-   * Uses the supplied {@link BeanManager} to {@linkplain
-   * Event#fireAsync(Object) fire an asynchronous event} that is also
-   * processed by this {@link AbstractBlockingExtension} that will
-   * cause {@link CountDownLatch#await()} to be called in a separate
-   * thread.
-   *
-   * <p><strong>This method is no longer necessary and is slated for
-   * removal.</strong></p>
-   *
-   * @param beanManager the {@link BeanManager} to use to fire the
-   * event; must not be {@code null}
-   *
-   * @exception NullPointerException if {@code beanManager} is {@code
-   * null}
-   *
-   * @see #unblock()
-   *
-   * @deprecated This method is slated for removal.
-   */
-  @Deprecated
-  protected void fireBlockingEvent(final BeanManager beanManager) {
-    Objects.requireNonNull(beanManager);
-  }
-
-  /**
-   * Uses the supplied {@link BeanManager} to {@linkplain
-   * Event#fireAsync(Object, NotificationOptions) fire an asynchronous
-   * event} that is also processed by this {@link
-   * AbstractBlockingExtension} that will cause {@link
-   * CountDownLatch#await()} to be called in a separate thread.
-   *
-   * <p><strong>This method is no longer necessary and is slated for
-   * removal.</strong></p>
-   *
-   * @param beanManager the {@link BeanManager} to use to fire the
-   * event; must not be {@code null}
-   *
-   * @param options the {@link NotificationOptions} to use in the
-   * {@linkplain Event#fireAsync(Object, NotificationOptions)
-   * asynchronous event notification}; no documentation is available
-   * in the CDI specification as to whether this parameter may be
-   * {@code null} or not
-   *
-   * @exception NullPointerException if {@code beanManager} is {@code 
-   * null}
-   *
-   * @exception InterruptedException if the thread was interrupted
-   *
-   * @see #unblock()
-   *
-   * @deprecated This method is slated for removal.
-   */
-  @Deprecated
-  protected void fireBlockingEvent(final BeanManager beanManager,
-                                   final NotificationOptions options)
-    throws InterruptedException {
-    Objects.requireNonNull(beanManager);
-  }
 
   /**
    * Blocks the main CDI thread immediately before any other recipient
@@ -358,41 +294,6 @@ public abstract class AbstractBlockingExtension implements Extension {
       unblock();
     }
     
-  }
-
-
-  /**
-   * An {@link Object} serving as a CDI event indicating that,
-   * when {@linkplain Event#fireAsync(Object) fired asynchronously},
-   * indicates that the receiver should wait for its current {@link
-   * Thread} to die.
-   *
-   * @author <a href="https://about.me/lairdnelson"
-   * target="_parent">Laird Nelson</a>
-   *
-   * @see CountDownLatch#await()
-   *
-   * @deprecated This class is slated for removal.
-   */
-  @Deprecated
-  protected static final class BlockingEvent {
-
-    
-    /*
-     * Constructors.
-     */
-
-
-    /**
-     * Creates a new {@link BlockingEvent}.
-     *
-     * @deprecated This class is slated for removal.
-     */
-    @Deprecated
-    private BlockingEvent() {
-      super();
-    }
-
   }
   
 }
