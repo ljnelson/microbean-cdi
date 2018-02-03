@@ -135,8 +135,8 @@ public final class Annotations {
    * <p>This method never returns {@code null}.</p>
    *
    * @param suppliedAnnotations a {@link Collection} of {@link
-   * Annotation}s that will be used as the initial set; must not be
-   * {@code null}
+   * Annotation}s that will be used as the initial set; may be {@code
+   * null}
    *
    * @param metaAnnotationType the qualifier {@linkplain
    * Annotation#annotationType() annotation type} to look for; must
@@ -148,17 +148,17 @@ public final class Annotations {
    *
    * @return a non-{@code null} subset of {@link Annotation}s
    *
-   * @exception NullPointerException if {@code suppliedAnnotations} or
-   * {@code metaAnnotationType} is {@code null}
+   * @exception NullPointerException if {@code metaAnnotationType} is
+   * {@code null}
    */
   public static final Set<Annotation> retainAnnotationsQualifiedWith(final Collection<? extends Annotation> suppliedAnnotations, final Class<? extends Annotation> metaAnnotationType, final BeanManager beanManager) {
-    Objects.requireNonNull(suppliedAnnotations);
     Objects.requireNonNull(metaAnnotationType);
     final Set<Annotation> results = new LinkedHashSet<>();
-
-    for (final Annotation annotation : suppliedAnnotations) {
-      if (annotation != null && isAnnotationQualifiedWith(annotation, metaAnnotationType, beanManager)) {
-        results.add(annotation);
+    if (suppliedAnnotations != null) {
+      for (final Annotation annotation : suppliedAnnotations) {
+        if (annotation != null && isAnnotationQualifiedWith(annotation, metaAnnotationType, beanManager)) {
+          results.add(annotation);
+        }
       }
     }
 
