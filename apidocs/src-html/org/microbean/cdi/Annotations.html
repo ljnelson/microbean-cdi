@@ -143,8 +143,8 @@
 <span class="sourceLineNo">135</span>   * &lt;p&gt;This method never returns {@code null}.&lt;/p&gt;<a name="line.135"></a>
 <span class="sourceLineNo">136</span>   *<a name="line.136"></a>
 <span class="sourceLineNo">137</span>   * @param suppliedAnnotations a {@link Collection} of {@link<a name="line.137"></a>
-<span class="sourceLineNo">138</span>   * Annotation}s that will be used as the initial set; must not be<a name="line.138"></a>
-<span class="sourceLineNo">139</span>   * {@code null}<a name="line.139"></a>
+<span class="sourceLineNo">138</span>   * Annotation}s that will be used as the initial set; may be {@code<a name="line.138"></a>
+<span class="sourceLineNo">139</span>   * null}<a name="line.139"></a>
 <span class="sourceLineNo">140</span>   *<a name="line.140"></a>
 <span class="sourceLineNo">141</span>   * @param metaAnnotationType the qualifier {@linkplain<a name="line.141"></a>
 <span class="sourceLineNo">142</span>   * Annotation#annotationType() annotation type} to look for; must<a name="line.142"></a>
@@ -156,17 +156,17 @@
 <span class="sourceLineNo">148</span>   *<a name="line.148"></a>
 <span class="sourceLineNo">149</span>   * @return a non-{@code null} subset of {@link Annotation}s<a name="line.149"></a>
 <span class="sourceLineNo">150</span>   *<a name="line.150"></a>
-<span class="sourceLineNo">151</span>   * @exception NullPointerException if {@code suppliedAnnotations} or<a name="line.151"></a>
-<span class="sourceLineNo">152</span>   * {@code metaAnnotationType} is {@code null}<a name="line.152"></a>
+<span class="sourceLineNo">151</span>   * @exception NullPointerException if {@code metaAnnotationType} is<a name="line.151"></a>
+<span class="sourceLineNo">152</span>   * {@code null}<a name="line.152"></a>
 <span class="sourceLineNo">153</span>   */<a name="line.153"></a>
 <span class="sourceLineNo">154</span>  public static final Set&lt;Annotation&gt; retainAnnotationsQualifiedWith(final Collection&lt;? extends Annotation&gt; suppliedAnnotations, final Class&lt;? extends Annotation&gt; metaAnnotationType, final BeanManager beanManager) {<a name="line.154"></a>
-<span class="sourceLineNo">155</span>    Objects.requireNonNull(suppliedAnnotations);<a name="line.155"></a>
-<span class="sourceLineNo">156</span>    Objects.requireNonNull(metaAnnotationType);<a name="line.156"></a>
-<span class="sourceLineNo">157</span>    final Set&lt;Annotation&gt; results = new LinkedHashSet&lt;&gt;();<a name="line.157"></a>
-<span class="sourceLineNo">158</span><a name="line.158"></a>
-<span class="sourceLineNo">159</span>    for (final Annotation annotation : suppliedAnnotations) {<a name="line.159"></a>
-<span class="sourceLineNo">160</span>      if (annotation != null &amp;&amp; isAnnotationQualifiedWith(annotation, metaAnnotationType, beanManager)) {<a name="line.160"></a>
-<span class="sourceLineNo">161</span>        results.add(annotation);<a name="line.161"></a>
+<span class="sourceLineNo">155</span>    Objects.requireNonNull(metaAnnotationType);<a name="line.155"></a>
+<span class="sourceLineNo">156</span>    final Set&lt;Annotation&gt; results = new LinkedHashSet&lt;&gt;();<a name="line.156"></a>
+<span class="sourceLineNo">157</span>    if (suppliedAnnotations != null) {<a name="line.157"></a>
+<span class="sourceLineNo">158</span>      for (final Annotation annotation : suppliedAnnotations) {<a name="line.158"></a>
+<span class="sourceLineNo">159</span>        if (annotation != null &amp;&amp; isAnnotationQualifiedWith(annotation, metaAnnotationType, beanManager)) {<a name="line.159"></a>
+<span class="sourceLineNo">160</span>          results.add(annotation);<a name="line.160"></a>
+<span class="sourceLineNo">161</span>        }<a name="line.161"></a>
 <span class="sourceLineNo">162</span>      }<a name="line.162"></a>
 <span class="sourceLineNo">163</span>    }<a name="line.163"></a>
 <span class="sourceLineNo">164</span><a name="line.164"></a>
