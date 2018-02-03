@@ -32,8 +32,8 @@ import javax.enterprise.inject.spi.Extension;
 
 import javax.interceptor.Interceptor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An {@code abstract} {@link Extension} whose implementations can
@@ -90,6 +90,8 @@ public abstract class AbstractBlockingExtension implements Extension {
    * The {@link Logger} used by instances of this class.
    *
    * <p>This field is never {@code null}.</p>
+   *
+   * @see #createLogger()
    */
   protected final Logger logger;
 
@@ -129,12 +131,23 @@ public abstract class AbstractBlockingExtension implements Extension {
    */
   protected AbstractBlockingExtension(final CountDownLatch latch) {
     super();
+    this.logger = this.createLogger();
+    if (this.logger == null) {
+      throw new IllegalStateException("createLogger() == null");
+    }
+    final String cn = this.getClass().getName();
+    final String mn = "<init>";
+    if (this.logger.isLoggable(Level.FINER)) {
+      this.logger.entering(cn, mn, latch);
+    }
     Objects.requireNonNull(latch);
     this.latch = latch;
-    this.logger = LoggerFactory.getLogger(this.getClass());
     Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     synchronized (instances) {
       instances.put(this, null);
+    }
+    if (this.logger.isLoggable(Level.FINER)) {
+      this.logger.exiting(cn, mn);
     }
   }
 
@@ -143,6 +156,20 @@ public abstract class AbstractBlockingExtension implements Extension {
    * Instance methods.
    */
 
+
+  /**
+   * Returns a {@link Logger} suitable for use with this {@link
+   * AbstractBlockingExtension} implementation.
+   *
+   * <p>This method never returns [@code null}.</p>
+   *
+   * <p>Overrides of this method must not return {@code null}.</p>
+   *
+   * @return a non-{@code null} {@link Logger}
+   */
+  protected Logger createLogger() {
+    return Logger.getLogger(this.getClass().getName());
+  }
 
   /**
    * Blocks the main CDI thread immediately before any other recipient
@@ -171,12 +198,14 @@ public abstract class AbstractBlockingExtension implements Extension {
                            @Priority(Interceptor.Priority.PLATFORM_BEFORE - 1)
                            final Object event)
     throws InterruptedException {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("ENTRY {} {} {}", this.getClass().getName(), "block", event);
+    final String cn = this.getClass().getName();
+    final String mn = "block";
+    if (this.logger.isLoggable(Level.FINER)) {
+      this.logger.entering(cn, mn, event);
     }
     this.latch.await();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("EXIT {} {}", this.getClass().getName(), "block");
+    if (this.logger.isLoggable(Level.FINER)) {
+      this.logger.exiting(cn, mn);
     }
   }
 
@@ -209,8 +238,10 @@ public abstract class AbstractBlockingExtension implements Extension {
    * internal set of <code>AbstractBlockingExtension</code> instances}
    */
   private final void unblock(final boolean remove) {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("ENTRY {} {}", this.getClass().getName(), "unblock");
+    final String cn = this.getClass().getName();
+    final String mn = "unblock";
+    if (this.logger.isLoggable(Level.FINER)) {
+      this.logger.entering(cn, mn, Boolean.valueOf(remove));
     }
     assert this.latch.getCount() == 0 || this.latch.getCount() == 1;
     this.latch.countDown();
@@ -219,8 +250,8 @@ public abstract class AbstractBlockingExtension implements Extension {
         instances.remove(this);
       }
     }
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("EXIT {} {}", this.getClass().getName(), "unblock");
+    if (this.logger.isLoggable(Level.FINER)) {
+      this.logger.exiting(cn, mn);
     }
   }
 
@@ -237,6 +268,13 @@ public abstract class AbstractBlockingExtension implements Extension {
    * @see #unblock()
    */
   public static final void unblockAll() {
+    final String cn = AbstractBlockingExtension.class.getName();
+    final String mn = "unblockAll";
+    final Logger logger = Logger.getLogger(cn);
+    if (logger.isLoggable(Level.FINER)) {
+      logger.entering(cn, mn);
+    }
+
     synchronized (instances) {
       if (!instances.isEmpty()) {
         instances.forEach((instance, ignored) -> {
@@ -247,6 +285,9 @@ public abstract class AbstractBlockingExtension implements Extension {
         instances.clear();
       }
       assert instances.isEmpty();
+    }
+    if (logger.isLoggable(Level.FINER)) {
+      logger.exiting(cn, mn);
     }
   }
 
@@ -290,8 +331,16 @@ public abstract class AbstractBlockingExtension implements Extension {
      * Calls {@link #unblock()} when invoked.
      */
     @Override
-    public final void run() {      
+    public final void run() {
+      final String cn = this.getClass().getName();
+      final String mn = "run";
+      if (logger.isLoggable(Level.FINER)) {
+        logger.entering(cn, mn);
+      }
       unblock();
+      if (logger.isLoggable(Level.FINER)) {
+        logger.exiting(cn, mn);
+      }
     }
     
   }
