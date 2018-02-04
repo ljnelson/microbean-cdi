@@ -161,7 +161,7 @@ public abstract class AbstractBlockingExtension implements Extension {
    * Returns a {@link Logger} suitable for use with this {@link
    * AbstractBlockingExtension} implementation.
    *
-   * <p>This method never returns [@code null}.</p>
+   * <p>This method never returns {@code null}.</p>
    *
    * <p>Overrides of this method must not return {@code null}.</p>
    *
