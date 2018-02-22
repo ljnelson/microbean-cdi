@@ -16,6 +16,8 @@
  */
 package org.microbean.cdi;
 
+import java.lang.Thread.UncaughtExceptionHandler;
+
 import java.util.IdentityHashMap;
 import java.util.Objects;
 
@@ -70,6 +72,26 @@ public abstract class AbstractBlockingExtension implements Extension {
    * @see #unblock(boolean)
    */
   private static final IdentityHashMap<AbstractBlockingExtension, Void> instances = new IdentityHashMap<>(5);
+
+  /**
+   * Static initializer; decorates any {@linkplain
+   * Thread#getUncaughtExceptionHandler() existing
+   * <tt>UncaughtExceptionHandler</tt>} with one that calls {@link
+   * #unblockAll()}.
+   */
+  static {
+    try {
+      installExceptionHandler();
+    } catch (final RuntimeException securityExceptionProbably) {
+      // We take great care not to call anything with .class in it
+      // since we're still initializing the class!
+      final Logger logger = Logger.getLogger("org.microbean.cdi.AbstractBlockingExtension");
+      assert logger != null;
+      if (logger.isLoggable(Level.WARNING)) {
+        logger.logp(Level.WARNING, "org.microbean.cdi.AbstractBlockingExtension", "<static init>", securityExceptionProbably.getMessage(), securityExceptionProbably);
+      }
+    }
+  }
   
 
   /*
@@ -255,6 +277,12 @@ public abstract class AbstractBlockingExtension implements Extension {
     }
   }
 
+
+  /*
+   * Static methods.
+   */
+
+  
   /**
    * Unblocks all known instances of the {@link
    * AbstractBlockingExtension} class by calling their associated
@@ -289,6 +317,22 @@ public abstract class AbstractBlockingExtension implements Extension {
     if (logger.isLoggable(Level.FINER)) {
       logger.exiting(cn, mn);
     }
+  }
+
+  /**
+   * Decorates any {@linkplain Thread#getUncaughtExceptionHandler()
+   * existing <tt>UncaughtExceptionHandler</tt>} with one that first
+   * calls {@link #unblockAll()}.
+   */
+  private static final void installExceptionHandler() {
+    final Thread currentThread = Thread.currentThread();
+    final UncaughtExceptionHandler old = currentThread.getUncaughtExceptionHandler();
+    currentThread.setUncaughtExceptionHandler((thread, throwable) -> {
+        unblockAll();
+        if (old != null) {
+          old.uncaughtException(thread, throwable);
+        }
+      });
   }
 
 
