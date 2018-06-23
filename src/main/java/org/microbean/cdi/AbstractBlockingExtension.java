@@ -102,7 +102,7 @@ public abstract class AbstractBlockingExtension implements Extension {
   /**
    * The {@link CountDownLatch} governing blocking behavior.
    *
-   * <p>This field will never be {@code null}.</p>
+   * <p>This field may be {@code null}.</p>
    *
    * @see #AbstractBlockingExtension(CountDownLatch)
    */
@@ -146,10 +146,8 @@ public abstract class AbstractBlockingExtension implements Extension {
    *
    * @param latch a {@link CountDownLatch} whose {@link
    * CountDownLatch#countDown()} and {@link CountDownLatch#await()}
-   * methods will be used to control blocking behavior; must not be
-   * {@code null}
-   *
-   * @exception NullPointerException if {@code latch} is {@code null}
+   * methods will be used to control blocking behavior; may be {@code
+   * null} in which case no blocking behavior will take place
    */
   protected AbstractBlockingExtension(final CountDownLatch latch) {
     super();
@@ -162,11 +160,12 @@ public abstract class AbstractBlockingExtension implements Extension {
     if (this.logger.isLoggable(Level.FINER)) {
       this.logger.entering(cn, mn, latch);
     }
-    Objects.requireNonNull(latch);
     this.latch = latch;
-    Runtime.getRuntime().addShutdownHook(new ShutdownHook());
-    synchronized (instances) {
-      instances.put(this, null);
+    if (latch != null) {
+      Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+      synchronized (instances) {
+        instances.put(this, null);
+      }
     }
     if (this.logger.isLoggable(Level.FINER)) {
       this.logger.exiting(cn, mn);
@@ -225,7 +224,9 @@ public abstract class AbstractBlockingExtension implements Extension {
     if (this.logger.isLoggable(Level.FINER)) {
       this.logger.entering(cn, mn, event);
     }
-    this.latch.await();
+    if (this.latch != null) {
+      this.latch.await();
+    }
     if (this.logger.isLoggable(Level.FINER)) {
       this.logger.exiting(cn, mn);
     }
@@ -265,11 +266,13 @@ public abstract class AbstractBlockingExtension implements Extension {
     if (this.logger.isLoggable(Level.FINER)) {
       this.logger.entering(cn, mn, Boolean.valueOf(remove));
     }
-    assert this.latch.getCount() == 0 || this.latch.getCount() == 1;
-    this.latch.countDown();
-    if (remove) {
-      synchronized (instances) {
-        instances.remove(this);
+    if (this.latch != null) {
+      assert this.latch.getCount() == 0 || this.latch.getCount() == 1;
+      this.latch.countDown();
+      if (remove) {
+        synchronized (instances) {
+          instances.remove(this);
+        }
       }
     }
     if (this.logger.isLoggable(Level.FINER)) {
